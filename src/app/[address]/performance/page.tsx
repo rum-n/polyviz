@@ -34,7 +34,7 @@ export default function PerformancePage({
     async function load() {
       try {
         const [activity, pos] = await Promise.all([
-          fetchActivity(address, 500, 0),
+          fetchActivity(address),
           fetchPositions(address),
         ]);
         setPnlData(computeDailyPnL(activity));

@@ -13,14 +13,21 @@ export async function fetchPositions(address: string): Promise<Position[]> {
   return apiFetch<Position[]>(`/api/polymarket/positions?address=${address}`);
 }
 
-export async function fetchActivity(
-  address: string,
-  limit = 500,
-  offset = 0
-): Promise<ActivityItem[]> {
-  return apiFetch<ActivityItem[]>(
-    `/api/polymarket/activity?address=${address}&limit=${limit}&offset=${offset}`
-  );
+const PAGE_SIZE = 500;
+
+export async function fetchActivity(address: string): Promise<ActivityItem[]> {
+  const pages: ActivityItem[][] = [];
+  let offset = 0;
+  while (true) {
+    const page = await apiFetch<ActivityItem[]>(
+      `/api/polymarket/activity?address=${address}&limit=${PAGE_SIZE}&offset=${offset}`
+    );
+    if (page.length === 0) break;
+    pages.push(page);
+    if (page.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
+  return pages.flat();
 }
 
 export async function fetchPortfolioValue(address: string): Promise<PortfolioValue> {

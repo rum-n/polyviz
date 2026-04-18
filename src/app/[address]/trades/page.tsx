@@ -26,7 +26,7 @@ export default function TradesPage({
   useEffect(() => {
     async function load() {
       try {
-        const data = await fetchActivity(address, 500, 0);
+        const data = await fetchActivity(address);
         setActivity(data);
       } catch {
         setError("Failed to load activity.");
