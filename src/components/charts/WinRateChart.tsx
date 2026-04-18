@@ -17,7 +17,7 @@ export function WinRateChart({ stat }: WinRateChartProps) {
 
   if (total === 0) {
     return (
-      <div className="flex h-40 items-center justify-center text-sm text-zinc-500">
+      <div className="flex h-40 items-center justify-center text-sm text-zinc-400">
         No closed positions yet
       </div>
     );
@@ -42,7 +42,7 @@ export function WinRateChart({ stat }: WinRateChartProps) {
           </Pie>
           <Tooltip
             contentStyle={{
-              backgroundColor: "#18181b",
+              backgroundColor: "#27272a",
               border: "1px solid #27272a",
               borderRadius: "8px",
               fontSize: "13px",
@@ -57,7 +57,7 @@ export function WinRateChart({ stat }: WinRateChartProps) {
           <div className="text-2xl font-semibold text-emerald-400">
             {formatPercent(stat.winRate)}
           </div>
-          <div className="text-zinc-500">Win rate</div>
+          <div className="text-zinc-400">Win rate</div>
         </div>
         <div className="flex gap-4">
           <div>
@@ -65,7 +65,7 @@ export function WinRateChart({ stat }: WinRateChartProps) {
               <span className="h-2 w-2 rounded-full bg-emerald-400" />
               <span className="text-zinc-300">{stat.wins} wins</span>
             </div>
-            <div className="ml-3.5 text-xs text-zinc-500">
+            <div className="ml-3.5 text-xs text-zinc-400">
               avg {formatUSDC(stat.avgWin)}
             </div>
           </div>
@@ -74,7 +74,7 @@ export function WinRateChart({ stat }: WinRateChartProps) {
               <span className="h-2 w-2 rounded-full bg-red-400" />
               <span className="text-zinc-300">{stat.losses} losses</span>
             </div>
-            <div className="ml-3.5 text-xs text-zinc-500">
+            <div className="ml-3.5 text-xs text-zinc-400">
               avg {formatUSDC(stat.avgLoss)}
             </div>
           </div>

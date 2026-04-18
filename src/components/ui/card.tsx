@@ -10,7 +10,7 @@ export function Card({
   return (
     <div
       className={cn(
-        "rounded-xl border border-zinc-800 bg-zinc-900 p-5",
+        "rounded-xl border border-zinc-700/60 bg-zinc-800 p-5",
         className
       )}
     >
@@ -41,7 +41,7 @@ export function CardTitle({
   children: React.ReactNode;
 }) {
   return (
-    <h3 className={cn("text-sm font-medium text-zinc-400", className)}>
+    <h3 className={cn("text-sm font-medium text-zinc-300", className)}>
       {children}
     </h3>
   );

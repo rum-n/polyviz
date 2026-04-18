@@ -84,17 +84,17 @@ export default function TradesPage({
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-3 gap-4">
         <Card>
-          <div className="text-sm text-zinc-500">Total trades</div>
+          <div className="text-sm text-zinc-400">Total trades</div>
           <div className="mt-1 text-2xl font-semibold">{trades.length}</div>
         </Card>
         <Card>
-          <div className="text-sm text-zinc-500">Total bought</div>
+          <div className="text-sm text-zinc-400">Total bought</div>
           <div className="mt-1 text-2xl font-semibold text-red-400">
             {formatUSDC(totalBought)}
           </div>
         </Card>
         <Card>
-          <div className="text-sm text-zinc-500">Total sold / redeemed</div>
+          <div className="text-sm text-zinc-400">Total sold / redeemed</div>
           <div className="mt-1 text-2xl font-semibold text-emerald-400">
             {formatUSDC(totalSold)}
           </div>
@@ -111,7 +111,7 @@ export default function TradesPage({
                 className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
                   filter === f
                     ? "bg-zinc-700 text-zinc-100"
-                    : "text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
+                    : "text-zinc-400 hover:bg-zinc-700 hover:text-zinc-300"
                 }`}
               >
                 {f}
@@ -123,12 +123,12 @@ export default function TradesPage({
             placeholder="Search markets…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200 placeholder-zinc-600 outline-none focus:border-blue-500"
+            className="rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-1.5 text-sm text-zinc-200 placeholder-zinc-600 outline-none focus:border-blue-500"
           />
         </div>
 
         {filtered.length === 0 ? (
-          <div className="py-8 text-center text-sm text-zinc-500">
+          <div className="py-8 text-center text-sm text-zinc-400">
             No trades match your filters
           </div>
         ) : (
@@ -136,7 +136,7 @@ export default function TradesPage({
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-zinc-800 text-left text-xs text-zinc-500">
+                  <tr className="border-b border-zinc-700 text-left text-xs text-zinc-400">
                     <th className="pb-2 font-medium">Date</th>
                     <th className="pb-2 font-medium">Market</th>
                     <th className="pb-2 font-medium">Outcome</th>
@@ -150,9 +150,9 @@ export default function TradesPage({
                   {paginated.map((trade, i) => (
                     <tr
                       key={`${trade.transactionHash}-${i}`}
-                      className="border-b border-zinc-800/50 last:border-0"
+                      className="border-b border-zinc-700/50 last:border-0"
                     >
-                      <td className="py-2.5 pr-4 text-xs text-zinc-500 whitespace-nowrap">
+                      <td className="py-2.5 pr-4 text-xs text-zinc-400 whitespace-nowrap">
                         {formatDate(new Date(trade.timestamp * 1000).toISOString())}
                       </td>
                       <td className="py-2.5 pr-4">
@@ -196,22 +196,22 @@ export default function TradesPage({
             </div>
 
             {totalPages > 1 && (
-              <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-4 text-sm">
-                <span className="text-zinc-500">
+              <div className="mt-4 flex items-center justify-between border-t border-zinc-700 pt-4 text-sm">
+                <span className="text-zinc-400">
                   {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length}
                 </span>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setPage(0)}
                     disabled={page === 0}
-                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-700 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     «
                   </button>
                   <button
                     onClick={() => setPage((p) => p - 1)}
                     disabled={page === 0}
-                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-700 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     ‹
                   </button>
@@ -224,7 +224,7 @@ export default function TradesPage({
                         className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
                           i === page
                             ? "bg-zinc-700 text-zinc-100"
-                            : "text-zinc-400 hover:bg-zinc-800"
+                            : "text-zinc-400 hover:bg-zinc-700"
                         }`}
                       >
                         {i + 1}
@@ -233,14 +233,14 @@ export default function TradesPage({
                   <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={page === totalPages - 1}
-                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-700 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     ›
                   </button>
                   <button
                     onClick={() => setPage(totalPages - 1)}
                     disabled={page === totalPages - 1}
-                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-700 disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     »
                   </button>

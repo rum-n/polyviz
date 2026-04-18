@@ -1,13 +1,22 @@
+"use client";
+
+import { use, useEffect } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 
-export default async function DashboardLayout({
+const STORAGE_KEY = "polyviz_address";
+
+export default function DashboardLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
   params: Promise<{ address: string }>;
 }) {
-  const { address } = await params;
+  const { address } = use(params);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, address);
+  }, [address]);
 
   return (
     <div className="flex min-h-screen flex-col">

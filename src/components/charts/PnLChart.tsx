@@ -32,10 +32,10 @@ export function PnLChart({ data }: PnLChartProps) {
             <stop offset="95%" stopColor={color} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" vertical={false} />
         <XAxis
           dataKey="date"
-          tick={{ fill: "#71717a", fontSize: 11 }}
+          tick={{ fill: "#a1a1aa", fontSize: 11 }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(d) =>
@@ -47,7 +47,7 @@ export function PnLChart({ data }: PnLChartProps) {
           interval="preserveStartEnd"
         />
         <YAxis
-          tick={{ fill: "#71717a", fontSize: 11 }}
+          tick={{ fill: "#a1a1aa", fontSize: 11 }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `$${v >= 0 ? "" : "-"}${Math.abs(v).toFixed(0)}`}
@@ -55,8 +55,8 @@ export function PnLChart({ data }: PnLChartProps) {
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "#18181b",
-            border: "1px solid #27272a",
+            backgroundColor: "#27272a",
+            border: "1px solid #3f3f46",
             borderRadius: "8px",
             fontSize: "13px",
             color: "#e4e4e7",

@@ -1,13 +1,22 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { isValidAddress } from "@/lib/utils";
+
+const STORAGE_KEY = "polyviz_address";
 
 export default function HomePage() {
   const router = useRouter();
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved && isValidAddress(saved)) {
+      router.replace(`/${saved}`);
+    }
+  }, [router]);
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault();
@@ -16,6 +25,7 @@ export default function HomePage() {
       setError("Please enter a valid Ethereum address (0x…)");
       return;
     }
+    localStorage.setItem(STORAGE_KEY, trimmed);
     router.push(`/${trimmed}`);
   }
 
@@ -33,23 +43,18 @@ export default function HomePage() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">
-            <label
-              htmlFor="address"
-              className="text-sm font-medium text-zinc-300"
-            >
+            <label htmlFor="address" className="text-sm font-medium text-zinc-300">
               Wallet address
             </label>
             <input
               id="address"
               type="text"
               value={address}
-              onChange={(e) => {
-                setAddress(e.target.value);
-                setError("");
-              }}
+              onChange={(e) => { setAddress(e.target.value); setError(""); }}
               placeholder="0x..."
               spellCheck={false}
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 font-mono text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              autoFocus
+              className="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-4 py-3 font-mono text-sm text-zinc-100 placeholder-zinc-600 outline-none transition focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             />
             {error && <p className="text-xs text-red-400">{error}</p>}
           </div>
@@ -62,7 +67,7 @@ export default function HomePage() {
           </button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-zinc-600">
+        <p className="mt-6 text-center text-xs text-zinc-400">
           Read-only. No wallet connection required.
         </p>
       </div>

@@ -20,10 +20,10 @@ export function VolumeChart({ data }: VolumeChartProps) {
   return (
     <ResponsiveContainer width="100%" height={180}>
       <BarChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" vertical={false} />
         <XAxis
           dataKey="date"
-          tick={{ fill: "#71717a", fontSize: 11 }}
+          tick={{ fill: "#a1a1aa", fontSize: 11 }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(d) =>
@@ -35,7 +35,7 @@ export function VolumeChart({ data }: VolumeChartProps) {
           interval="preserveStartEnd"
         />
         <YAxis
-          tick={{ fill: "#71717a", fontSize: 11 }}
+          tick={{ fill: "#a1a1aa", fontSize: 11 }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `$${v.toFixed(0)}`}
@@ -43,8 +43,8 @@ export function VolumeChart({ data }: VolumeChartProps) {
         />
         <Tooltip
           contentStyle={{
-            backgroundColor: "#18181b",
-            border: "1px solid #27272a",
+            backgroundColor: "#27272a",
+            border: "1px solid #3f3f46",
             borderRadius: "8px",
             fontSize: "13px",
             color: "#e4e4e7",

@@ -29,7 +29,7 @@ export function PositionScatter({ positions }: PositionScatterProps) {
 
   if (data.length === 0) {
     return (
-      <div className="flex h-40 items-center justify-center text-sm text-zinc-500">
+      <div className="flex h-40 items-center justify-center text-sm text-zinc-400">
         No closed positions yet
       </div>
     );
@@ -38,11 +38,11 @@ export function PositionScatter({ positions }: PositionScatterProps) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <ScatterChart margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#3f3f46" />
         <XAxis
           dataKey="invested"
           name="Invested"
-          tick={{ fill: "#71717a", fontSize: 11 }}
+          tick={{ fill: "#a1a1aa", fontSize: 11 }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `$${v.toFixed(0)}`}
@@ -57,7 +57,7 @@ export function PositionScatter({ positions }: PositionScatterProps) {
         <YAxis
           dataKey="pnl"
           name="P&L"
-          tick={{ fill: "#71717a", fontSize: 11 }}
+          tick={{ fill: "#a1a1aa", fontSize: 11 }}
           tickLine={false}
           axisLine={false}
           tickFormatter={(v) => `$${v.toFixed(0)}`}
@@ -66,8 +66,8 @@ export function PositionScatter({ positions }: PositionScatterProps) {
         <ReferenceLine y={0} stroke="#3f3f46" strokeDasharray="4 4" />
         <Tooltip
           contentStyle={{
-            backgroundColor: "#18181b",
-            border: "1px solid #27272a",
+            backgroundColor: "#27272a",
+            border: "1px solid #3f3f46",
             borderRadius: "8px",
             fontSize: "13px",
             color: "#e4e4e7",
@@ -76,7 +76,7 @@ export function PositionScatter({ positions }: PositionScatterProps) {
             if (!active || !payload?.length) return null;
             const d = payload[0].payload as { invested: number; pnl: number; title: string };
             return (
-              <div className="rounded-lg border border-zinc-700 bg-zinc-900 p-3 text-xs">
+              <div className="rounded-lg border border-zinc-700 bg-zinc-800 p-3 text-xs">
                 <p className="mb-1 max-w-[180px] truncate text-zinc-300">
                   {d.title}
                 </p>

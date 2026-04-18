@@ -84,7 +84,7 @@ export default function PerformancePage({
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <Card>
-          <div className="flex items-center gap-1.5 text-sm text-zinc-500">
+          <div className="flex items-center gap-1.5 text-sm text-zinc-400">
             Realized P&L
             <InfoTooltip content="Cumulative profit or loss from completed trades only — money actually received from sells and redeems, minus what you spent on buys." />
           </div>
@@ -97,7 +97,7 @@ export default function PerformancePage({
           </div>
         </Card>
         <Card>
-          <div className="flex items-center gap-1.5 text-sm text-zinc-500">
+          <div className="flex items-center gap-1.5 text-sm text-zinc-400">
             Total volume
             <InfoTooltip content="Total dollar value of all trades executed — buys, sells, and redeems combined." />
           </div>
@@ -106,19 +106,19 @@ export default function PerformancePage({
           </div>
         </Card>
         <Card>
-          <div className="flex items-center gap-1.5 text-sm text-zinc-500">
+          <div className="flex items-center gap-1.5 text-sm text-zinc-400">
             Win rate (activity)
             <InfoTooltip content="Net cashflow per market from your trade history — a market is a win if total received (sells + redeems) exceeds total spent. Includes redeemed markets the positions endpoint no longer tracks." />
           </div>
           <div className="mt-1 text-2xl font-semibold text-blue-400">
             {winLossActivity ? formatPercent(winLossActivity.winRate) : "—"}
           </div>
-          <div className="mt-0.5 text-xs text-zinc-600">
+          <div className="mt-0.5 text-xs text-zinc-400">
             {totalMarkets} markets traded
           </div>
         </Card>
         <Card>
-          <div className="flex items-center gap-1.5 text-sm text-zinc-500">
+          <div className="flex items-center gap-1.5 text-sm text-zinc-400">
             Avg win / loss
             <InfoTooltip content="Average net cashflow on winning markets vs losing markets, computed from trade history." />
           </div>
@@ -148,7 +148,7 @@ export default function PerformancePage({
         {pnlData.length > 0 ? (
           <PnLChart data={pnlData} />
         ) : (
-          <div className="flex h-40 items-center justify-center text-sm text-zinc-500">
+          <div className="flex h-40 items-center justify-center text-sm text-zinc-400">
             No trading activity found
           </div>
         )}
@@ -162,7 +162,7 @@ export default function PerformancePage({
         {pnlData.length > 0 ? (
           <VolumeChart data={pnlData} />
         ) : (
-          <div className="flex h-40 items-center justify-center text-sm text-zinc-500">
+          <div className="flex h-40 items-center justify-center text-sm text-zinc-400">
             No trading activity found
           </div>
         )}
@@ -177,7 +177,7 @@ export default function PerformancePage({
           {winLossActivity ? (
             <WinRateChart stat={winLossActivity} />
           ) : (
-            <div className="flex h-40 items-center justify-center text-sm text-zinc-500">
+            <div className="flex h-40 items-center justify-center text-sm text-zinc-400">
               No data
             </div>
           )}
@@ -191,7 +191,7 @@ export default function PerformancePage({
           {winLossPositions ? (
             <WinRateChart stat={winLossPositions} />
           ) : (
-            <div className="flex h-40 items-center justify-center text-sm text-zinc-500">
+            <div className="flex h-40 items-center justify-center text-sm text-zinc-400">
               No closed positions in wallet
             </div>
           )}

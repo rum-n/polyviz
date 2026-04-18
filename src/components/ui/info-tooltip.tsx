@@ -14,7 +14,7 @@ export function InfoTooltip({ content }: InfoTooltipProps) {
         <Tooltip.Trigger asChild>
           <button
             type="button"
-            className="inline-flex cursor-default text-zinc-600 hover:text-zinc-400 transition-colors"
+            className="inline-flex cursor-default text-zinc-400 hover:text-zinc-400 transition-colors"
             aria-label="More info"
           >
             <Info size={13} />
@@ -24,7 +24,7 @@ export function InfoTooltip({ content }: InfoTooltipProps) {
           <Tooltip.Content
             side="top"
             sideOffset={6}
-            className="z-50 max-w-[220px] rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs leading-relaxed text-zinc-300 shadow-xl"
+            className="z-50 max-w-[220px] rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-xs leading-relaxed text-zinc-300 shadow-xl"
           >
             {content}
             <Tooltip.Arrow className="fill-zinc-700" />
