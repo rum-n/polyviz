@@ -16,13 +16,14 @@ export async function GET(req: NextRequest) {
     { headers: { Accept: "application/json" } }
   );
 
+  const body = await upstream.text();
   if (!upstream.ok) {
+    console.error(`Polymarket activity ${upstream.status}:`, body);
     return Response.json(
-      { error: "Polymarket API error" },
+      { error: body || "Polymarket API error" },
       { status: upstream.status }
     );
   }
 
-  const data = await upstream.json();
-  return Response.json(data);
+  return Response.json(JSON.parse(body));
 }

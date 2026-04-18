@@ -14,6 +14,7 @@ export async function fetchPositions(address: string): Promise<Position[]> {
 }
 
 const PAGE_SIZE = 500;
+const MAX_OFFSET = 3000; // Polymarket hard cap
 
 export async function fetchActivity(address: string): Promise<ActivityItem[]> {
   const pages: ActivityItem[][] = [];
@@ -24,7 +25,7 @@ export async function fetchActivity(address: string): Promise<ActivityItem[]> {
     );
     if (page.length === 0) break;
     pages.push(page);
-    if (page.length < PAGE_SIZE) break;
+    if (page.length < PAGE_SIZE || offset >= MAX_OFFSET) break;
     offset += PAGE_SIZE;
   }
   return pages.flat();
@@ -67,6 +68,36 @@ export function computeDailyPnL(activity: ActivityItem[]): DailyPnL[] {
     cumulative += realized;
     return { date, realizedPnl: realized, cumulativePnl: cumulative, volume };
   });
+}
+
+// Win/loss from activity: groups all trades by market, net cashflow per market determines win/loss.
+// Covers redeemed positions that no longer appear in the positions endpoint.
+export function computeWinLossFromActivity(activity: ActivityItem[]): WinLossStat {
+  const byMarket = new Map<string, number>();
+
+  for (const item of activity) {
+    if (item.type !== "TRADE" && item.type !== "REDEEM") continue;
+    const key = item.conditionId || item.asset;
+    if (!key) continue;
+    const current = byMarket.get(key) ?? 0;
+    if (item.side === "SELL" || item.type === "REDEEM") {
+      byMarket.set(key, current + item.usdcSize);
+    } else {
+      byMarket.set(key, current - item.usdcSize);
+    }
+  }
+
+  const nets = Array.from(byMarket.values());
+  const wins = nets.filter((n) => n > 0);
+  const losses = nets.filter((n) => n <= 0);
+
+  return {
+    wins: wins.length,
+    losses: losses.length,
+    winRate: nets.length ? wins.length / nets.length : 0,
+    avgWin: wins.length ? wins.reduce((s, n) => s + n, 0) / wins.length : 0,
+    avgLoss: losses.length ? losses.reduce((s, n) => s + n, 0) / losses.length : 0,
+  };
 }
 
 export function computeWinLoss(positions: Position[]): WinLossStat {

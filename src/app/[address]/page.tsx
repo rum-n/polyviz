@@ -15,21 +15,27 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PnLChart } from "@/components/charts/PnLChart";
 import { formatUSDC, formatPercent, formatDate } from "@/lib/utils";
+import { InfoTooltip } from "@/components/ui/info-tooltip";
 
 function StatCard({
   label,
   value,
   sub,
   positive,
+  tooltip,
 }: {
   label: string;
   value: string;
   sub?: string;
   positive?: boolean;
+  tooltip?: string;
 }) {
   return (
     <Card>
-      <div className="text-sm text-zinc-500">{label}</div>
+      <div className="flex items-center gap-1.5 text-sm text-zinc-500">
+        {label}
+        {tooltip && <InfoTooltip content={tooltip} />}
+      </div>
       <div
         className={`mt-1 text-2xl font-semibold ${
           positive === undefined
@@ -112,19 +118,23 @@ export default function OverviewPage({
         <StatCard
           label="Portfolio value"
           value={formatUSDC(portfolioValue?.value ?? 0)}
+          tooltip="Current market value of all your open positions, priced at their latest mid-market price."
         />
         <StatCard
           label="All-time P&L"
           value={formatUSDC(allTimePnl)}
           positive={allTimePnl >= 0}
+          tooltip="Total profit or loss across all positions — open and closed — based on cost basis vs current or final value."
         />
         <StatCard
           label="Open positions"
           value={String(openPositions.length)}
+          tooltip="Number of markets where you currently hold shares."
         />
         <StatCard
           label="Total positions"
           value={String(positions.length)}
+          tooltip="Total number of markets you have ever participated in, including closed and redeemed ones."
         />
       </div>
 

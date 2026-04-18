@@ -10,6 +10,8 @@ import { formatUSDC, formatDate } from "@/lib/utils";
 
 type FilterSide = "ALL" | "BUY" | "SELL";
 
+const PAGE_SIZE = 50;
+
 export default function TradesPage({
   params,
 }: {
@@ -22,6 +24,7 @@ export default function TradesPage({
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<FilterSide>("ALL");
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -37,6 +40,9 @@ export default function TradesPage({
     load();
   }, [address]);
 
+  // Reset to page 0 whenever filters change
+  useEffect(() => { setPage(0); }, [filter, search]);
+
   const trades = activity.filter((a) => a.type === "TRADE" || a.type === "REDEEM");
 
   const filtered = trades.filter((t) => {
@@ -46,6 +52,9 @@ export default function TradesPage({
       : true;
     return matchesSide && matchesSearch;
   });
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   const totalBought = trades
     .filter((t) => t.side === "BUY")
@@ -123,67 +132,122 @@ export default function TradesPage({
             No trades match your filters
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-800 text-left text-xs text-zinc-500">
-                  <th className="pb-2 font-medium">Date</th>
-                  <th className="pb-2 font-medium">Market</th>
-                  <th className="pb-2 font-medium">Outcome</th>
-                  <th className="pb-2 font-medium">Side</th>
-                  <th className="pb-2 text-right font-medium">Price</th>
-                  <th className="pb-2 text-right font-medium">Shares</th>
-                  <th className="pb-2 text-right font-medium">Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((trade, i) => (
-                  <tr
-                    key={trade.transactionHash || i}
-                    className="border-b border-zinc-800/50 last:border-0"
-                  >
-                    <td className="py-2.5 pr-4 text-xs text-zinc-500 whitespace-nowrap">
-                      {formatDate(new Date(trade.timestamp * 1000).toISOString())}
-                    </td>
-                    <td className="py-2.5 pr-4">
-                      <div className="max-w-[260px] truncate text-zinc-200">
-                        {trade.title}
-                      </div>
-                    </td>
-                    <td className="py-2.5 pr-4">
-                      <Badge
-                        variant={trade.outcome === "Yes" ? "success" : "danger"}
-                      >
-                        {trade.outcome}
-                      </Badge>
-                    </td>
-                    <td className="py-2.5 pr-4">
-                      <Badge
-                        variant={
-                          trade.type === "REDEEM"
-                            ? "warning"
-                            : trade.side === "BUY"
-                            ? "outline"
-                            : "success"
-                        }
-                      >
-                        {trade.type === "REDEEM" ? "REDEEM" : trade.side}
-                      </Badge>
-                    </td>
-                    <td className="py-2.5 pr-4 text-right text-zinc-300">
-                      {(trade.price * 100).toFixed(1)}¢
-                    </td>
-                    <td className="py-2.5 pr-4 text-right text-zinc-400">
-                      {trade.size.toFixed(2)}
-                    </td>
-                    <td className="py-2.5 text-right font-medium text-zinc-200">
-                      {formatUSDC(trade.usdcSize)}
-                    </td>
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800 text-left text-xs text-zinc-500">
+                    <th className="pb-2 font-medium">Date</th>
+                    <th className="pb-2 font-medium">Market</th>
+                    <th className="pb-2 font-medium">Outcome</th>
+                    <th className="pb-2 font-medium">Side</th>
+                    <th className="pb-2 text-right font-medium">Price</th>
+                    <th className="pb-2 text-right font-medium">Shares</th>
+                    <th className="pb-2 text-right font-medium">Value</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {paginated.map((trade, i) => (
+                    <tr
+                      key={`${trade.transactionHash}-${i}`}
+                      className="border-b border-zinc-800/50 last:border-0"
+                    >
+                      <td className="py-2.5 pr-4 text-xs text-zinc-500 whitespace-nowrap">
+                        {formatDate(new Date(trade.timestamp * 1000).toISOString())}
+                      </td>
+                      <td className="py-2.5 pr-4">
+                        <div className="max-w-[260px] truncate text-zinc-200">
+                          {trade.title}
+                        </div>
+                      </td>
+                      <td className="py-2.5 pr-4">
+                        <Badge
+                          variant={trade.outcome === "Yes" ? "success" : "danger"}
+                        >
+                          {trade.outcome}
+                        </Badge>
+                      </td>
+                      <td className="py-2.5 pr-4">
+                        <Badge
+                          variant={
+                            trade.type === "REDEEM"
+                              ? "warning"
+                              : trade.side === "BUY"
+                              ? "outline"
+                              : "success"
+                          }
+                        >
+                          {trade.type === "REDEEM" ? "REDEEM" : trade.side}
+                        </Badge>
+                      </td>
+                      <td className="py-2.5 pr-4 text-right text-zinc-300">
+                        {(trade.price * 100).toFixed(1)}¢
+                      </td>
+                      <td className="py-2.5 pr-4 text-right text-zinc-400">
+                        {trade.size.toFixed(2)}
+                      </td>
+                      <td className="py-2.5 text-right font-medium text-zinc-200">
+                        {formatUSDC(trade.usdcSize)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {totalPages > 1 && (
+              <div className="mt-4 flex items-center justify-between border-t border-zinc-800 pt-4 text-sm">
+                <span className="text-zinc-500">
+                  {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length}
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setPage(0)}
+                    disabled={page === 0}
+                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    «
+                  </button>
+                  <button
+                    onClick={() => setPage((p) => p - 1)}
+                    disabled={page === 0}
+                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    ‹
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i)
+                    .filter((i) => Math.abs(i - page) <= 2)
+                    .map((i) => (
+                      <button
+                        key={i}
+                        onClick={() => setPage(i)}
+                        className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                          i === page
+                            ? "bg-zinc-700 text-zinc-100"
+                            : "text-zinc-400 hover:bg-zinc-800"
+                        }`}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                  <button
+                    onClick={() => setPage((p) => p + 1)}
+                    disabled={page === totalPages - 1}
+                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    ›
+                  </button>
+                  <button
+                    onClick={() => setPage(totalPages - 1)}
+                    disabled={page === totalPages - 1}
+                    className="rounded px-2 py-1 text-zinc-400 hover:bg-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed"
+                  >
+                    »
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </Card>
     </div>
