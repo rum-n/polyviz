@@ -1,0 +1,84 @@
+import type { ActivityItem, DailyPnL, Position, PortfolioValue, WinLossStat } from "./types";
+
+async function apiFetch<T>(path: string): Promise<T> {
+  const res = await fetch(path, { cache: "no-store" });
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(`API ${res.status}: ${text || path}`);
+  }
+  return res.json();
+}
+
+export async function fetchPositions(address: string): Promise<Position[]> {
+  return apiFetch<Position[]>(`/api/polymarket/positions?address=${address}`);
+}
+
+export async function fetchActivity(
+  address: string,
+  limit = 500,
+  offset = 0
+): Promise<ActivityItem[]> {
+  return apiFetch<ActivityItem[]>(
+    `/api/polymarket/activity?address=${address}&limit=${limit}&offset=${offset}`
+  );
+}
+
+export async function fetchPortfolioValue(address: string): Promise<PortfolioValue> {
+  return apiFetch<PortfolioValue>(`/api/polymarket/value?address=${address}`);
+}
+
+export function isPositionClosed(position: Position): boolean {
+  if (position.redeemable) return true;
+  const end = new Date(position.endDate);
+  return !isNaN(end.getTime()) && end < new Date();
+}
+
+export function computeDailyPnL(activity: ActivityItem[]): DailyPnL[] {
+  const byDay = new Map<string, { realized: number; volume: number }>();
+
+  const trades = activity.filter(
+    (a) => a.type === "TRADE" || a.type === "REDEEM"
+  );
+
+  const sorted = [...trades].sort((a, b) => a.timestamp - b.timestamp);
+
+  for (const item of sorted) {
+    // timestamp is Unix seconds
+    const day = new Date(item.timestamp * 1000).toISOString().slice(0, 10);
+    const entry = byDay.get(day) ?? { realized: 0, volume: 0 };
+    if (item.side === "SELL" || item.type === "REDEEM") {
+      entry.realized += item.usdcSize;
+    } else {
+      entry.realized -= item.usdcSize;
+    }
+    entry.volume += item.usdcSize;
+    byDay.set(day, entry);
+  }
+
+  let cumulative = 0;
+  return Array.from(byDay.entries()).map(([date, { realized, volume }]) => {
+    cumulative += realized;
+    return { date, realizedPnl: realized, cumulativePnl: cumulative, volume };
+  });
+}
+
+export function computeWinLoss(positions: Position[]): WinLossStat {
+  const closed = positions.filter(isPositionClosed);
+  const wins = closed.filter((p) => p.cashPnl > 0);
+  const losses = closed.filter((p) => p.cashPnl <= 0);
+
+  const avgWin = wins.length
+    ? wins.reduce((s, p) => s + p.cashPnl, 0) / wins.length
+    : 0;
+  const avgLoss = losses.length
+    ? losses.reduce((s, p) => s + p.cashPnl, 0) / losses.length
+    : 0;
+
+  return {
+    wins: wins.length,
+    losses: losses.length,
+    winRate: closed.length ? wins.length / closed.length : 0,
+    avgWin,
+    avgLoss,
+  };
+}
